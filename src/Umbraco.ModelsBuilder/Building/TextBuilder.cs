@@ -141,6 +141,14 @@ namespace Umbraco.ModelsBuilder.Building
 
                 sb.Append("\n\t{\n");
 
+                //Lennard: Add support for cultures
+                if (type.VariesByCulture || type.ImplementingInterfaces.Any(x => x.VariesByCulture))
+                {
+                    WriteGeneratedCodeAttribute(sb, "\t\t");
+                    sb.AppendLine("\t\tstring ModelCulture {get;}");
+                    sb.AppendLine();
+                }
+
                 // write the properties - only the local (non-ignored) ones, we're an interface
                 var more = false;
                 foreach (var prop in type.Properties.Where(x => !x.IsIgnored).OrderBy(x => x.ClrName))
@@ -218,6 +226,14 @@ namespace Umbraco.ModelsBuilder.Building
 
             // write the properties
             sb.Append("\t\t// properties\n");
+
+            //Lennard: Add support for cultures
+            if (type.VariesByCulture || type.ImplementingInterfaces.Any(x => x.VariesByCulture))
+            {
+                WriteGeneratedCodeAttribute(sb, "\t\t");
+                sb.AppendLine("\t\tpublic string ModelCulture {get; set;} = Thread.CurrentThread.CurrentCulture.Name;");
+            }
+
             WriteContentTypeProperties(sb, type);
 
             // close the class declaration
@@ -322,6 +338,11 @@ namespace Umbraco.ModelsBuilder.Building
                 sb.Append("\t\t///</summary>\n");
             }
 
+            //Lennard: Create constant for alias
+            WriteGeneratedCodeAttribute(sb, "\t\t");
+            sb.AppendLine($"\t\tpublic const string {property.ClrName}Alias = \"{property.Alias}\";");
+            sb.AppendLine();
+
             WriteGeneratedCodeAttribute(sb, "\t\t");
             sb.AppendFormat("\t\t[ImplementPropertyType(\"{0}\")]\n", property.Alias);
 
@@ -344,8 +365,16 @@ namespace Umbraco.ModelsBuilder.Building
                     WriteClrType(sb, property.ClrTypeName);
                     sb.Append(">");
                 }
-                sb.AppendFormat("(\"{0}\");\n",
-                    property.Alias);
+
+                //Lennard: Add support for cultures
+                if (property.VariesByCulture)
+                {
+                    sb.AppendFormat("(\"{0}\", ModelCulture);\n", property.Alias);
+                }
+                else
+                {
+                    sb.AppendFormat("(\"{0}\");\n", property.Alias);
+                }
             }
 
             if (property.Errors != null)
@@ -377,8 +406,16 @@ namespace Umbraco.ModelsBuilder.Building
                 WriteClrType(sb, property.ClrTypeName);
                 sb.Append(">");
             }
-            sb.AppendFormat("(\"{0}\");\n",
-                property.Alias);
+
+            //Lennard: Add support for cultures
+            if (property.VariesByCulture)
+            {
+                sb.AppendFormat("(\"{0}\", that.ModelCulture);\n", property.Alias);
+            }
+            else
+            {
+                sb.AppendFormat("(\"{0}\");\n", property.Alias);
+            }
         }
 
         private static IEnumerable<string> SplitError(string error)

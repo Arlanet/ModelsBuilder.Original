@@ -113,7 +113,9 @@ namespace Umbraco.ModelsBuilder.Umbraco
                     ParentId = contentType.ParentId,
 
                     Name = contentType.Name,
-                    Description = contentType.Description
+                    Description = contentType.Description,
+
+                    VariesByCulture = contentType.VariesByCulture()
                 };
 
                 // of course this should never happen, but when it happens, better detect it
@@ -154,7 +156,9 @@ namespace Umbraco.ModelsBuilder.Umbraco
                         ClrName = GetClrName(propertyType.Name, propertyType.Alias),
 
                         Name = propertyType.Name,
-                        Description = propertyType.Description
+                        Description = propertyType.Description,
+
+                        VariesByCulture = propertyType.VariesByCulture()
                     };
 
                     var publishedPropertyType = publishedContentType.GetPropertyType(propertyType.Alias);

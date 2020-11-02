@@ -54,6 +54,8 @@ namespace Umbraco.ModelsBuilder.Building
         /// commented out code eg in PureLive.</remarks>
         public List<string> Errors;
 
+        public bool VariesByCulture { get; set; }
+
         /// <summary>
         /// Adds an error.
         /// </summary>

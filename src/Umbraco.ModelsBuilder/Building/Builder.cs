@@ -42,6 +42,7 @@ namespace Umbraco.ModelsBuilder.Building
             "Umbraco.Web",
             "Umbraco.ModelsBuilder",
             "Umbraco.ModelsBuilder.Umbraco",
+            "System.Threading"
         };
 
         /// <summary>

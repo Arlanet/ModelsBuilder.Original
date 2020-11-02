@@ -174,6 +174,8 @@ namespace Umbraco.ModelsBuilder.Building
             }
         }
 
+        public bool VariesByCulture { get; set; }
+
         /// <summary>
         /// Recursively collects all types inherited, or implemented as interfaces, by a specified type.
         /// </summary>
