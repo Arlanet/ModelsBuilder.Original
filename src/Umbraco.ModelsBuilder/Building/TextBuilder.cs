@@ -231,7 +231,8 @@ namespace Umbraco.ModelsBuilder.Building
             if (type.VariesByCulture || type.ImplementingInterfaces.Any(x => x.VariesByCulture))
             {
                 WriteGeneratedCodeAttribute(sb, "\t\t");
-                sb.AppendLine("\t\tpublic string ModelCulture {get; set;} = Thread.CurrentThread.CurrentCulture.Name;");
+                sb.AppendLine("\t\tpublic string ModelCulture { get { return _modelCulture ?? Thread.CurrentThread.CurrentCulture.Name; } set { _modelCulture = value; }}");
+                sb.AppendLine("\t\tprivate string _modelCulture;");
             }
 
             WriteContentTypeProperties(sb, type);
